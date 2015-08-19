@@ -15,12 +15,12 @@ def parse_url(params, valuation_date, url = 'http://www.treasurydirect.gov/BC/SB
 
     bond_results = [params['SerialNumber'], valuation_date]
 
-
     # Additional parameters
     params['RedemptionDate'] = valuation_date
     params['btnAdd.x'] = 'CALCULATE'
 
     page = requests.post(url, data = params)
+
     tree = html.fromstring(page.text)
 
     tres_results = tree.xpath('//table[@class = "bnddata"]//tr[@class = "altrow1"]/td//text()')[1:10]
@@ -30,6 +30,8 @@ def parse_url(params, valuation_date, url = 'http://www.treasurydirect.gov/BC/SB
     initial_price = float(tres_results[5][1:])
     current_value = float(tres_results[9][1:])
     issue_date = tres_results[2]
+
     cagr = formula.calc_CAGR(initial_price, current_value, issue_date, valuation_date)
+
 
     return bond_results + tres_results + [cagr]
