@@ -16,7 +16,7 @@ def load_from_csv(filepath, header = True, delim = ','):
         header (boolean): Defaults to true, headers are ignored
 
     Returns:
-        A dictionary of {'label': 'value', ...}
+        A list of dictionaries of [{'label': 'value', ...}, ...]
     """
     logging.info('Loading data from:  %s', filepath)
     # Set up labels
@@ -36,18 +36,3 @@ def load_from_csv(filepath, header = True, delim = ','):
             data.append(dict(zip(labels, row)))
 
     return data
-
-class TestCases(unittest.TestCase):
-
-    def test_of_loading_one(self):
-        self.assertEqual(load_from_csv('test_one.csv', header = True), [{'Series': 'EE', 'SerialNumber': 'R11111111', 'IssueDate': '12/2222', 'Denomination': '4000'}])
-
-    def test_of_loading_two(self):
-        self.assertEqual(load_from_csv('test_two.csv', header = True), [{'Series': 'EE', 'SerialNumber': 'R11111111', 'IssueDate': '12/2222', 'Denomination': '4000'}, {'Series': 'E', 'SerialNumber': 'NZZZZZZZZ', 'IssueDate': '01/0000', 'Denomination': '100'}])
-
-
-if __name__ == '__main__':
-    unittest.main()
-
-
-
