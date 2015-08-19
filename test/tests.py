@@ -20,20 +20,40 @@ class CSVParser_TestCases(unittest.TestCase):
         file_path = os.getcwd() + "/test/" + 'test_data.csv'
         self.assertEqual(csv_parser.load_from_csv(file_path, header = True), [{'Series': 'EE', 'SerialNumber': 'C777535063EE', 'IssueDate': '08/1989', 'Denomination': '100'}, {'Series': 'EE', 'SerialNumber': 'R114463707EE', 'IssueDate': '08/1994', 'Denomination': '200'}])
 
-@unittest.skip("demonstrating skipping")
-class TresDirectParse_TestCases(unittest.TestCase):
 
-    def test_treasurydirect_parsing_current_valuation(self):
+class TresDirectParse_TestCases(unittest.TestCase):
+    @unittest.skip("skipping live request")
+    def test_treasurydirect_parsing_current_valuation_live(self):
         test_params = {'Series': 'EE', 'SerialNumber': 'C777535063EE', 'IssueDate': '08/1989', 'Denomination': '100'}
         test_valuation_date = '08/2015'
 
         self.assertEqual(td.parse_url(params = test_params, valuation_date = test_valuation_date), ['C777535063EE', '08/2015', 'EE', '$100', '08/1989', '02/2016', '08/2019', '$50.00', '$127.00', '4.00%', '$6.88', '$177.00', 0.049789363935413666])
 
-    def test_treasurydirect_parsing_past_valuation(self):
+    @unittest.skip("skipping live request")
+    def test_treasurydirect_parsing_past_valuation_live(self):
         test_params = {'Series': 'EE', 'SerialNumber': 'R114463707EE', 'IssueDate': '08/1994', 'Denomination': '200'}
         test_valuation_date = '07/2015'
 
         self.assertEqual(td.parse_url(params = test_params, valuation_date = test_valuation_date), ['R114463707EE', '07/2015', 'EE', '$200', '08/1994', '08/2015', '08/2024', '$100.00', '$129.04', '4.00%', '$5.28', '$229.04', 0.04039191319543778])
+
+    file_attr = {'text.return_value': 'test_response'}
+    mock_requests = mock.Mock(spec = td.requests.Response, **file_attr)
+
+    tree_attr = {'xpath.return_value': ['dropped', 'EE', '$200', '08/1994', '08/2015', '08/2024', '$100.00', '$129.04', '4.00%', '$229.04']}
+    mock_tree = mock.Mock(**tree_attr)
+
+    @mock.patch('lxml.html.fromstring', return_value = mock_tree)
+    @mock.patch('requests.post', return_value = mock_requests)
+    def test_treasurydirect_parsing_past_valuation_w_mock(self, mock_response, mock_page):
+        test_params = {'Series': 'EE', 'SerialNumber': 'R114463707EE', 'IssueDate': '08/1994', 'Denomination': '200'}
+        test_valuation_date = '07/2015'
+
+        self.assertEqual(td.parse_url(params = test_params, valuation_date = test_valuation_date), ['R114463707EE', '07/2015', 'EE', '$200', '08/1994', '08/2015', '08/2024', '$100.00', '$129.04', '4.00%', '08/1994', '$229.04', 0.04039191319543778])
+
+        mock_response.assert_called_once_with('http://www.treasurydirect.gov/BC/SBCPrice', data={'RedemptionDate': '07/2015', 'Series': 'EE', 'SerialNumber': 'R114463707EE', 'Denomination': '200', 'IssueDate': '08/1994', 'btnAdd.x': 'CALCULATE'})
+
+        self.assertEqual(mock_page.called, True)
+
 
 class formula_TestCases(unittest.TestCase):
 
