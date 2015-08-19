@@ -86,7 +86,6 @@ def parse_cmdline(args):
 
 
 if __name__ == '__main__':
-    print sys.argv[1:]
 
     opts = parse_cmdline(sys.argv[1:])
     main(opts)
