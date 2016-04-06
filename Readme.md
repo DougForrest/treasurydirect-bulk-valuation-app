@@ -13,7 +13,11 @@ The application loads a list of bonds from a csv file, sends a series of HTTP re
 ## Steps:
 
 1. Download or clone the source repository.
-2. Run the following command line in the source root directory
+2. Install the required libraries
+
+> pip install -r requirements.txt
+
+3. Run the app with the following command line in the source root directory
 
 >`python get_values.py '~/path/to/input.csv'`
 
@@ -56,8 +60,8 @@ optional arguments:
   --v, --verbose        Print output to terminal as parsed, default is False
 ```
 
-3. Look for the output file 'Bond_Valuations.csv' in working directory
-4. Do something with all the time you saved!
+4. Look for the output file 'Bond_Valuations.csv' in working directory
+5. Do something with all the time you saved!
 
 
 
