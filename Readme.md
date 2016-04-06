@@ -15,11 +15,11 @@ The application loads a list of bonds from a csv file, sends a series of HTTP re
 1. Download or clone the source repository.
 2. Install the required libraries
 
-        > pip install -r requirements.txt
+        pip install -r requirements.txt
 
 3. Run the app with the following command line in the source root directory
 
-        >`python get_values.py '~/path/to/input.csv'`
+        python get_values.py '~/path/to/input.csv'
 
 Where '~/path/to/input.csv' is the filepath on your local machine to a csv file containing input variables in the format of:
 
